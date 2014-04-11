@@ -1,0 +1,22 @@
+{
+    "name": "andrewsuzuki/perm",
+    "description": "Save array-return configuration files in Laravel 4.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrew Suzuki",
+            "homepage": "http://andrewsuzuki.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.1.*",
+        "illuminate/filesystem": "4.1.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Andrewsuzuki\\Perm": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
