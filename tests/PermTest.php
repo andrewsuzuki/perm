@@ -31,7 +31,7 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$filesystem->expects($this->any())->method('getRequire')->will($this->returnValue($this->testConfigArray));
 		$perm = new Perm($filesystem);
 
-		return $perm->load('some_dir/some_file.php');
+		return $perm->load('some_dir/some_file');
 	}
 
 	public function testLoadsExisting()
@@ -52,7 +52,7 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$filesystem->expects($this->once())->method('getRequire')->will($this->returnValue(null));
 		$perm = new Perm($filesystem);
 
-		$perm->load('does_not_exist/does_not_exist.php');
+		$perm->load('does_not_exist/does_not_exist');
 	}
 
 	public function testLoadsNonExisting()
@@ -102,6 +102,28 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals('John', $perm->get('parents.dad'));
 	}
 
+	public function testSetAndGetFilename()
+	{
+		$perm = $this->loadPerm(true);
+
+		$new_filename = '/test/.a_new/profile';
+
+		$this->assertInstanceOf('Andrewsuzuki\\Perm\\Perm', $perm->setFilename($new_filename));
+
+		$this->assertEquals($new_filename, $perm->getFilename());
+	}
+
+	/**
+     * @expectedException        InvalidArgumentException
+     * @expectedExceptionMessage Filename basename cannot contain dots.
+     */
+	public function testSetFilenameWithDotsException()
+	{
+		$perm = $this->loadPerm(true);
+
+		$perm->setFilename('/test/.a_new/profile.blarga');
+	}
+
 	public function testForget()
 	{
 		$perm = $this->loadPerm(true);
@@ -117,16 +139,30 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$filesystem = $this->mockFilesystem();
 		$filesystem->expects($this->any())->method('makeDirectory');
 		$filesystem->expects($this->any())->method('put')->with($this->anything(), $this->callback(function($contents) {
-			return substr($contents, 0, 18) == '<?php return array' && substr($contents, -5) == '); ?>';
+			return substr($contents, 0, 18) == '<?php return array' && substr($contents, -3) == ' ?>';
 		}));
 
 		$perm = new Perm($filesystem);
 
-		$perm->load('some_dir/some_file.php');
+		$perm->load('some_dir/some_file');
 
 		$save = $perm->save();
 
 		$this->assertInstanceOf('Andrewsuzuki\\Perm\\Perm', $save);
+	}
+
+	/**
+     * @expectedException        Exception
+     * @expectedExceptionMessage A filename was not loaded/set.
+     */
+	public function testSaveNoFilenameException()
+	{
+		$filesystem = $this->mockFilesystem();
+		$filesystem->expects($this->any())->method('makeDirectory');
+		$filesystem->expects($this->any())->method('put');
+		$perm = new Perm($filesystem);
+
+		$perm->save();
 	}
 
 	/**
@@ -140,7 +176,7 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$filesystem->expects($this->any())->method('put');
 		$perm = new Perm($filesystem);
 
-		$perm->load('some_dir/some_file.php');
+		$perm->load('some_dir/some_file');
 
 		$perm->save();
 	}
@@ -156,7 +192,7 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$filesystem->expects($this->any())->method('put')->will($this->throwException(new \Exception('Can\'t put file for some reason')));
 		$perm = new Perm($filesystem);
 
-		$perm->load('some_dir/some_file.php');
+		$perm->load('some_dir/some_file');
 
 		$perm->save();
 	}

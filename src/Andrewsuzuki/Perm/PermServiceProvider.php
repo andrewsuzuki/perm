@@ -22,13 +22,13 @@ class PermServiceProvider extends ServiceProvider {
 	}
 
 	/**
-	 * Boot the service.
+	 * Bootstrap the application events.
 	 * 
 	 * @return void
 	 */
 	public function boot()
 	{
-		$this->bind('perm', function($app) {
+		$this->app->bind('perm', function($app) {
 			return new Perm($app['files']);
 		});
 	}
@@ -42,5 +42,4 @@ class PermServiceProvider extends ServiceProvider {
 	{
 		return array('perm');
 	}
-
 }
