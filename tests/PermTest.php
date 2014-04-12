@@ -5,18 +5,18 @@ use Illuminate\Filesystem\Filesystem;
 
 class PermTest extends \PHPUnit_Framework_TestCase {
 
-	public $testConfigArray = array(
-		'url' => 'http://andrewsuzuki.com',
-		'gender' => 'male',
-		'name' => [
-			'first' => 'Andrew',
-			'last' => 'Suzuki'
-		],
-	);
+	public $testConfigArray = array();
 
 	public function setup()
 	{
-
+		$this->testConfigArray = array(
+			'url' => 'http://andrewsuzuki.com',
+			'gender' => 'male',
+			'name' => array(
+				'first' => 'Andrew',
+				'last' => 'Suzuki'
+			),
+		);
 	}
 
 	public function mockFilesystem()
