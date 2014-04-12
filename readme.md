@@ -5,7 +5,7 @@
 
 perm offers a simple way to save and retrieve "native" php configuration files in the filesystem.
 
-For example, if writing a cms like [Vessel](https://github.com/hokeo/vessel), you can save your site title **perm**anently from an admin interface with perm.
+For example, if writing a cms like [Vessel](https://github.com/hokeo/vessel), you might want to have the ability to save fast configuration values (like a site title or url) **perm**-anently from an admin interface. This is easy with perm.
 
 ## Requirements
 
@@ -45,7 +45,7 @@ And that's it.
 
 * Load a config file, or mark a non-existing file for creation. *chainable*
 ```PHP
-$perm = Perm::load('/path/to/file'); (filename basename must not contain dots)
+$perm = Perm::load('/path/to/file'); // (filename basename must not contain dots)
 ```
 > If the file's directory does not exist, **it will be created**.
 
@@ -58,6 +58,8 @@ $first_name = $perm->get('name.first'); // use dot notation for nested values
 * Get multiple values in one go (returns array).
 ```PHP
 $locationAndFirstName = $perm->get(array('location', 'name.first'));
+// or...
+list($location, $firstName) = $perm->get(array('location', 'name.first'));
 ```
 
 * Get all config values.
@@ -98,3 +100,13 @@ Chaining methods is an easy way to consolidate, and improve readability. You can
 ```PHP
 Perm::load(app_path('config').'/profile')->set('name', 'Andrew')->forget('location')->save();
 ```
+
+## Contributors
+
+* [Andrew Suzuki](http://andrewsuzuki.com)
+
+To contribute, please fork and submit a pull request. Otherwise, feel free to post possible enhancements/issues on the [issues](https://github.com/andrewsuzuki/perm/issues) page.
+
+## License
+
+Vessel is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
