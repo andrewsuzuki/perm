@@ -12,23 +12,25 @@ class PermServiceProvider extends ServiceProvider {
 	protected $defer = false;
 
 	/**
-	 * Register the service provider.
-	 *
-	 * @return void
-	 */
-	public function register()
-	{
-		$this->package('andrewsuzuki/perm');
-	}
-
-	/**
 	 * Bootstrap the application events.
 	 * 
 	 * @return void
 	 */
 	public function boot()
 	{
-		$this->app->bind('perm', function($app) {
+		$this->package('andrewsuzuki/perm', null, __DIR__.'/../..');
+	}
+
+	/**
+	 * Register the service provider.
+	 *
+	 * @return void
+	 */
+	public function register()
+	{
+		$this->app['config']->package('andrewsuzuki/perm', __DIR__.'/../../config');
+
+		$this->app->bind('Andrewsuzuki\Perm\Perm', function($app) {
 			return new Perm($app['files'], $app['config']);
 		});
 	}
@@ -40,6 +42,6 @@ class PermServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array('perm');
+		return array('Andrewsuzuki\Perm\Perm');
 	}
 }

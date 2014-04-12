@@ -6,6 +6,6 @@ class Perm extends Facade {
 
 	protected static function getFacadeAccessor()
 	{
-		return 'perm';
+		return 'Andrewsuzuki\Perm\Perm';
 	}
 }
