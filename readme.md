@@ -11,8 +11,11 @@ For example, if writing a cms like [Vessel](https://github.com/hokeo/vessel), yo
 
 * PHP 5.3+
 * Laravel 4
+* Composer
 
 ## Installation
+
+perm installs with [Composer](https://getcomposer.org) through [Packagist](https://packagist.org/packages/andrewsuzuki/perm).
 
 Add the following to your composer.json:
 
@@ -134,7 +137,7 @@ Perm::load('profile.andrew')->set('name', 'Andrew')->forget('location')->save();
 
 * [Andrew Suzuki](http://andrewsuzuki.com)
 
-To contribute, please fork and submit a pull request. Otherwise, feel free to post possible enhancements/issues on the [issues](https://github.com/andrewsuzuki/perm/issues) page.
+To contribute, please fork and submit a pull request. Otherwise, feel free to submit possible enhancements/issues on the [issues](https://github.com/andrewsuzuki/perm/issues) page.
 
 ## License
 
