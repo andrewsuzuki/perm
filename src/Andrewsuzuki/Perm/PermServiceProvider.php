@@ -29,7 +29,7 @@ class PermServiceProvider extends ServiceProvider {
 	public function boot()
 	{
 		$this->app->bind('perm', function($app) {
-			return new Perm($app['files']);
+			return new Perm($app['files'], $app['config']);
 		});
 	}
 

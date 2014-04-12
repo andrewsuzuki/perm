@@ -7,6 +7,8 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 
 	public $testConfigArray = array();
 
+	public $basepath;
+
 	public function setup()
 	{
 		$this->testConfigArray = array(
@@ -17,6 +19,8 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 				'last' => 'Suzuki'
 			),
 		);
+
+		$this->basepath = '/path/to/app/config';
 	}
 
 	public function mockFilesystem()
@@ -24,17 +28,24 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		return $this->getMock('Illuminate\Filesystem\Filesystem');
 	}
 
-	public function loadPerm($existing = true)
+	public function mockConfig()
+	{
+		$config = $this->getMockBuilder('Illuminate\Config\Repository')->disableOriginalConstructor()->getMock();
+		$config->expects($this->any())->method('get')->with('perm::basepath')->will($this->returnValue($this->basepath));
+		return $config;
+	}
+
+	public function loadPerm($existing = true, $filename = '/some_dir/some_file')
 	{
 		$filesystem = $this->mockFilesystem();
 		$filesystem->expects($this->any())->method('exists')->will($this->returnValue($existing));
 		$filesystem->expects($this->any())->method('getRequire')->will($this->returnValue($this->testConfigArray));
-		$perm = new Perm($filesystem);
+		$perm = new Perm($filesystem, $this->mockConfig());
 
-		return $perm->load('some_dir/some_file');
+		return $perm->load($filename);
 	}
 
-	public function testLoadsExisting()
+	public function testLoadsExistingAbsolute()
 	{
 		$perm = $this->loadPerm(true);
 		$this->assertInstanceOf('Andrewsuzuki\\Perm\\Perm', $perm);
@@ -42,7 +53,7 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @expectedException		Exception
+	 * @expectedException		 Exception
 	 * @expectedExceptionMessage Existing configuration file could not be loaded (not valid array).
 	 */
 	public function testThrowsExceptionIfLoadsInvalid()
@@ -50,9 +61,9 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$filesystem = $this->mockFilesystem();
 		$filesystem->expects($this->once())->method('exists')->will($this->returnValue(true));
 		$filesystem->expects($this->once())->method('getRequire')->will($this->returnValue(null));
-		$perm = new Perm($filesystem);
+		$perm = new Perm($filesystem, $this->mockConfig());
 
-		$perm->load('does_not_exist/does_not_exist');
+		$perm->load('/some_dir/some_file');
 	}
 
 	public function testLoadsNonExisting()
@@ -126,26 +137,35 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$perm->set('test', new \StdClass);
 	}
 
-	public function testSetAndGetFilename()
+	public function testSetAndGetAbsoluteFilename()
 	{
 		$perm = $this->loadPerm(true);
 
-		$new_filename = '/test/.a_new/profile';
+		$new_filename = '/some_dir/some_file';
 
 		$this->assertInstanceOf('Andrewsuzuki\\Perm\\Perm', $perm->setFilename($new_filename));
 
 		$this->assertEquals($new_filename, $perm->getFilename());
 	}
 
-	/**
-	 * @expectedException        InvalidArgumentException
-	 * @expectedExceptionMessage Filename basename cannot contain dots.
-	 */
-	public function testSetFilenameWithDotsException()
+	public function testSetAndGetDotFilename()
 	{
 		$perm = $this->loadPerm(true);
 
-		$perm->setFilename('/test/.a_new/profile.blarga');
+		$this->assertInstanceOf('Andrewsuzuki\\Perm\\Perm', $perm->setFilename('profile.andrew'));
+
+		$this->assertEquals($this->basepath.'/profile/andrew', $perm->getFilename());
+	}
+
+	/**
+	 * @expectedException        InvalidArgumentException
+	 * @expectedExceptionMessage Absolute file path basename cannot have an extension.
+	 */
+	public function testSetAbsoluteFilenameWithExtensionException()
+	{
+		$perm = $this->loadPerm(true);
+
+		$perm->setFilename('/some_dir/some_file.php');
 	}
 
 	public function testForget()
@@ -166,7 +186,7 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 			return substr($contents, 0, 18) == '<?php return array' && substr($contents, -3) == ' ?>';
 		}));
 
-		$perm = new Perm($filesystem);
+		$perm = new Perm($filesystem, $this->mockConfig());
 
 		$perm->load('some_dir/some_file');
 
@@ -184,7 +204,7 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$filesystem = $this->mockFilesystem();
 		$filesystem->expects($this->any())->method('makeDirectory');
 		$filesystem->expects($this->any())->method('put');
-		$perm = new Perm($filesystem);
+		$perm = new Perm($filesystem, $this->mockConfig());
 
 		$perm->save();
 	}
@@ -198,7 +218,7 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$filesystem = $this->mockFilesystem();
 		$filesystem->expects($this->any())->method('makeDirectory')->will($this->throwException(new \Exception('Can\'t make directory for some reason')));
 		$filesystem->expects($this->any())->method('put');
-		$perm = new Perm($filesystem);
+		$perm = new Perm($filesystem, $this->mockConfig());
 
 		$perm->load('some_dir/some_file');
 
@@ -214,7 +234,7 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$filesystem = $this->mockFilesystem();
 		$filesystem->expects($this->any())->method('makeDirectory');
 		$filesystem->expects($this->any())->method('put')->will($this->throwException(new \Exception('Can\'t put file for some reason')));
-		$perm = new Perm($filesystem);
+		$perm = new Perm($filesystem, $this->mockConfig());
 
 		$perm->load('some_dir/some_file');
 
