@@ -131,15 +131,18 @@ class Perm {
 	/**
 	 * Gets a config value (can use laravel dot notation)
 	 *
-	 * @param  mixed $key String key, or array of keys
-	 * @return mixed      Set/saved config value, array of values (if passed array of keys), or null/nulls if dne
+	 * @param  mixed $key      Dot-string key, or array of keys
+	 * @param  mixed $fallback Will fall back to this value if the key does not exist.
+	 * @return mixed           Set/saved config value, array of values (if passed array of keys), or null/nulls if dne
 	 */
-	public function get($keyOrArray)
+	public function get($keyOrArray, $fallback = null)
 	{
 		if (is_array($keyOrArray))
-			return array_only($this->configValues, $keyOrArray);
+			return array_only($this->configValues, $keyOrArray); // return array of specified keys (laravel helper)
+		elseif ($this->has($keyOrArray))
+			return array_get($this->configValues, $keyOrArray); // return key
 		else
-			return array_get($this->configValues, $keyOrArray); // get value, with laravel dot-notation helper
+			return $fallback; // return fallback value
 	}
 
 	/**
@@ -225,5 +228,46 @@ class Perm {
 		{
 			throw new \Exception('Configuration file could not be saved: '.$e->getMessage());
 		}
+	}
+
+	/**
+	 * Checks if config has key
+	 *
+	 * @param  string $key Dot-notation key
+	 * @return boolean
+	 */
+	public function has($key)
+	{
+		$ref = &$this->configValues;
+
+		// explode dot notation
+		foreach (explode('.', $key) as $ck)
+		{
+			if (!$ck) continue; // skip blanks
+			if (!array_key_exists($ck, $ref)) return false;
+			$ref = &$ref[$ck];
+		}
+
+		return true;
+	}
+
+	/**
+	 * __get magic for getting keys like properties
+	 *
+	 * @return mixed
+	 */
+	public function __get($key)
+	{
+		return $this->get($key);
+	}
+
+	/**
+	 * __set magic for setting keys like properties
+	 *
+	 * @return mixed
+	 */
+	public function __set($key, $value)
+	{
+		$this->set($key, $value);
 	}
 }

@@ -95,6 +95,13 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
+	public function testGetWithMagicAccessor()
+	{
+		$perm = $this->loadPerm(true);
+
+		$this->assertEquals('male', $perm->gender);
+	}
+
 	public function testSet()
 	{
 		$perm = $this->loadPerm(true);
@@ -111,6 +118,15 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals('Brown', $perm->get('name.last'));
 		$this->assertEquals('Earth', $perm->get('location'));
 		$this->assertEquals('John', $perm->get('parents.dad'));
+	}
+
+	public function testSetWithMagicMutator()
+	{
+		$perm = $this->loadPerm(true);
+
+		$set = $perm->cool = 'you';
+
+		$this->assertEquals('you', $perm->get('cool'));
 	}
 
 	/**
@@ -166,6 +182,20 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$perm = $this->loadPerm(true);
 
 		$perm->setFilename('/some_dir/some_file.php');
+	}
+
+	public function testHas()
+	{
+		$perm = $this->loadPerm(true);
+
+		$this->assertTrue($perm->has('name.first'));
+		$this->assertTrue($perm->has('name.first.'));
+		$this->assertTrue($perm->has('.name.first'));
+		$this->assertTrue($perm->has('.name.first.'));
+		$this->assertFalse($perm->has('name.middle'));
+		$this->assertTrue($perm->has('name'));
+		$this->assertTrue($perm->has('gender'));
+		$this->assertFalse($perm->has('sasquatch'));
 	}
 
 	public function testForget()

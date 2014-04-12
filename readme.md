@@ -62,6 +62,7 @@ $perm = Perm::load('/path/to/file');
 * Get a config value.
 ```PHP
 $location   = $perm->get('location');
+$location   = $perm->location; // for the first level, you can use magic properties
 $first_name = $perm->get('name.first'); // use dot notation for nested values
 ```
 
@@ -80,11 +81,19 @@ $config = $perm->getAll();
 * Set a value. *chainable*
 ```PHP
 $perm->set('timezone', 'UTC');
+// for the first level, you can use magic properties
+$perm->timezone = 'UTC';
 ```
 
 * Set multiple values in one go. *chainable*
 ```PHP
 $perm->set(array('timezone' => 'UTC', 'location' => 'Earth'))
+```
+
+* Check if a key exists.
+```PHP
+$exists = $perm->has('location'); // true/false
+$exists = $perm->has('name.first'); // true/false
 ```
 
 * Forget a key. *chainable*
