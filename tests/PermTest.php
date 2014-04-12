@@ -120,6 +120,26 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals('John', $perm->get('parents.dad'));
 	}
 
+	public function testSetIf()
+	{
+		$perm = $this->loadPerm(true);
+
+		$this->assertInstanceOf('Andrewsuzuki\\Perm\\Perm', $perm->setIf('url', 'http://andrewsuzuki.com/actualUrl'));
+		$this->assertInstanceOf('Andrewsuzuki\\Perm\\Perm', $perm->setIf('name.last', 'Brown'));
+
+		$this->assertInstanceOf('Andrewsuzuki\\Perm\\Perm', $perm->setIf(array(
+			'name.first' => 'Bobby',
+			'location' => 'Earth',
+			'parents.dad' => 'John'
+		)));
+
+		$this->assertEquals('http://andrewsuzuki.com', $perm->get('url'));
+		$this->assertEquals('Suzuki', $perm->get('name.last'));
+		$this->assertEquals('Andrew', $perm->get('name.first'));
+		$this->assertEquals('Earth', $perm->get('location'));
+		$this->assertEquals('John', $perm->get('parents.dad'));
+	}
+
 	public function testSetWithMagicMutator()
 	{
 		$perm = $this->loadPerm(true);
@@ -206,6 +226,15 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf('Andrewsuzuki\\Perm\\Perm', $perm->forget('gender'));
 
 		$this->assertEquals(array('url' => $this->testConfigArray['url']), $perm->getAll());
+	}
+
+	public function testReset()
+	{
+		$perm = $this->loadPerm(true);
+
+		$this->assertInstanceOf('Andrewsuzuki\\Perm\\Perm', $perm->reset());
+
+		$this->assertEquals(array(), $perm->getAll());
 	}
 
 	public function testSave()

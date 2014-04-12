@@ -47,7 +47,7 @@ class Perm {
 		if (!$basepath) $basepath = $this->config->get('perm::basepath');
 		$this->basepath = $basepath;
 
-		$this->configValues = array();
+		$this->reset();
 	}
 
 	/**
@@ -150,9 +150,10 @@ class Perm {
 	 * 
 	 * @param  array|string $keyOrArray Array of key=>values, or key string (can use laravel dot notation)
 	 * @param  mixed        $value      Config value to set
+	 * @param  boolean      $overwrite	If false, it will only set the value if the key(s) doesn't already exist
 	 * @return              $this
 	 */
-	public function set($keyOrArray, $value = null)
+	public function set($keyOrArray, $value = null, $overwrite = true)
 	{
 		// ensure value is not an object/closure
 		if (is_object($value))
@@ -171,7 +172,7 @@ class Perm {
 
 			foreach ($keyOrArray as $key => $value)
 			{
-				$perm = $perm->set($key, $value);
+				$perm = $perm->set($key, $value, $overwrite);
 			}
 
 			return $perm;
@@ -182,9 +183,23 @@ class Perm {
 			throw new \InvalidArgumentException('Config key must be a string.');
 		}
 
-		array_set($this->configValues, $keyOrArray, $value); // set value, with laravel dot-notation helper
+		// only set if overwriting or the key doesn't already exist
+		if ($overwrite || !$this->has($keyOrArray))
+			array_set($this->configValues, $keyOrArray, $value); // set value, with laravel dot-notation helper
 
 		return $this;
+	}
+
+	/**
+	 * Sets a config value only if it doesn't already exist under key
+	 *
+	 * @param  array|string $keyOrArray Array of key=>values, or key string (can use laravel dot notation)
+	 * @param  mixed        $value      Config value to set
+	 * @return              $this
+	 */
+	public function setIf($keyOrArray, $value = null)
+	{
+		return $this->set($keyOrArray, $value, false);
 	}
 
 	/**
@@ -196,6 +211,17 @@ class Perm {
 	public function forget($key)
 	{
 		array_forget($this->configValues, $key);
+		return $this;
+	}
+
+	/**
+	 * Forgets all key/values (clears array)
+	 *
+	 * @return $this
+	 */
+	public function reset()
+	{
+		$this->configValues = array();
 		return $this;
 	}
 

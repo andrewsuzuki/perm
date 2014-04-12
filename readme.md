@@ -85,6 +85,11 @@ $perm->set('timezone', 'UTC');
 $perm->timezone = 'UTC';
 ```
 
+* Set a value if and only if it doesn't exist. *chainable*
+```PHP
+$perm->setIf('timezone', 'UTC');
+```
+
 * Set multiple values in one go. *chainable*
 ```PHP
 $perm->set(array('timezone' => 'UTC', 'location' => 'Earth'))
@@ -99,6 +104,11 @@ $exists = $perm->has('name.first'); // true/false
 * Forget a key. *chainable*
 ```PHP
 $perm->forget('location');
+```
+
+* Reset (forget all key/values). *chainable*
+```PHP
+$perm->reset();
 ```
 
 * Save updated config. *chainable*
@@ -117,7 +127,7 @@ $perm->setFilename('/path/to/new/file');
 Chaining methods is an easy way to consolidate, and improve readability. You can combine any of the above methods marked as *chainable*. For example:
 
 ```PHP
-Perm::load(app_path('config').'/profile')->set('name', 'Andrew')->forget('location')->save();
+Perm::load('profile.andrew')->set('name', 'Andrew')->forget('location')->save();
 ```
 
 ## Contributors
