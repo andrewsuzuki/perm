@@ -42,9 +42,9 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-     * @expectedException        Exception
-     * @expectedExceptionMessage Existing configuration file could not be loaded (not valid array).
-     */
+	 * @expectedException		Exception
+	 * @expectedExceptionMessage Existing configuration file could not be loaded (not valid array).
+	 */
 	public function testThrowsExceptionIfLoadsInvalid()
 	{
 		$filesystem = $this->mockFilesystem();
@@ -102,6 +102,30 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals('John', $perm->get('parents.dad'));
 	}
 
+	/**
+	 * @expectedException        InvalidArgumentException
+	 * @expectedExceptionMessage Config value cannot be a closure.
+	 */
+	public function testSetClosureException()
+	{
+		$perm = $this->loadPerm(true);
+
+		$perm->set('test', function() {
+			return 'cool';
+		});
+	}
+
+	/**
+	 * @expectedException        InvalidArgumentException
+	 * @expectedExceptionMessage Config value cannot be an object.
+	 */
+	public function testSetObjectException()
+	{
+		$perm = $this->loadPerm(true);
+
+		$perm->set('test', new \StdClass);
+	}
+
 	public function testSetAndGetFilename()
 	{
 		$perm = $this->loadPerm(true);
@@ -114,9 +138,9 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-     * @expectedException        InvalidArgumentException
-     * @expectedExceptionMessage Filename basename cannot contain dots.
-     */
+	 * @expectedException        InvalidArgumentException
+	 * @expectedExceptionMessage Filename basename cannot contain dots.
+	 */
 	public function testSetFilenameWithDotsException()
 	{
 		$perm = $this->loadPerm(true);
@@ -152,9 +176,9 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-     * @expectedException        Exception
-     * @expectedExceptionMessage A filename was not loaded/set.
-     */
+	 * @expectedException		Exception
+	 * @expectedExceptionMessage A filename was not loaded/set.
+	 */
 	public function testSaveNoFilenameException()
 	{
 		$filesystem = $this->mockFilesystem();
@@ -166,9 +190,9 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-     * @expectedException        Exception
-     * @expectedExceptionMessage Can't make directory for some reason
-     */
+	 * @expectedException		Exception
+	 * @expectedExceptionMessage Can't make directory for some reason
+	 */
 	public function testSaveCantMakeDirectoryException()
 	{
 		$filesystem = $this->mockFilesystem();
@@ -182,9 +206,9 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-     * @expectedException        Exception
-     * @expectedExceptionMessage Can't put file for some reason
-     */
+	 * @expectedException		Exception
+	 * @expectedExceptionMessage Can't put file for some reason
+	 */
 	public function testSaveCantPutFileException()
 	{
 		$filesystem = $this->mockFilesystem();

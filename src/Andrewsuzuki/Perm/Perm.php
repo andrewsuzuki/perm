@@ -120,6 +120,14 @@ class Perm {
 	 */
 	public function set($keyOrArray, $value = null)
 	{
+		// ensure value is not an object/closure
+		if (is_object($value))
+		{
+			// determine exception message (if it's a closure or not) and throw
+			$type = ($value instanceof \Closure) ? 'a closure' : 'an object';
+			throw new \InvalidArgumentException('Config value cannot be '.$type.'.');
+		}
+
 		// handle arrays passed as first argument
 		if (is_array($keyOrArray))
 		{
@@ -133,6 +141,11 @@ class Perm {
 			}
 
 			return $perm;
+		}
+		// ensure key is a string
+		elseif (!is_string($keyOrArray))
+		{
+			throw new \InvalidArgumentException('Config key must be a string.');
 		}
 
 		array_set($this->config, $keyOrArray, $value); // set value, with laravel dot-notation helper
