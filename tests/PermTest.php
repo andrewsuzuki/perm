@@ -183,7 +183,7 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$filesystem = $this->mockFilesystem();
 		$filesystem->expects($this->any())->method('makeDirectory');
 		$filesystem->expects($this->any())->method('put')->with($this->anything(), $this->callback(function($contents) {
-			return substr($contents, 0, 18) == '<?php return array' && substr($contents, -3) == ' ?>';
+			return substr($contents, 0, 18) == '<?php return array' && substr($contents, -6) == ' */ ?>';
 		}));
 
 		$perm = new Perm($filesystem, $this->mockConfig());
