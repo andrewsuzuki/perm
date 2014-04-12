@@ -40,12 +40,22 @@ Now add the facade alias to the `aliases` array:
 
 And that's it.
 
+If you'd like to load/save files from a config base directory other than app/config, publish the package's configuration:
+
+```
+php artisan config:publish hokeo/vessel
+```
+
+Then modify the base path in app/config/packages/andrewsuzuki/perm/config.php.
 
 ## Usage
 
-* Load a config file, or mark a non-existing file for creation. *chainable*
+* Load a config file, or mark a non-existing file/directory for creation. *chainable*
 ```PHP
-$perm = Perm::load('/path/to/file'); // (filename basename must not contain dots)
+// dot notation from base path (see above for configuration)
+$perm = Perm::load('profile.andrew');
+// ...or absolute path (no extension)
+$perm = Perm::load('/path/to/file');
 ```
 > If the file's directory does not exist, **it will be created**.
 
