@@ -5,11 +5,11 @@
 
 perm offers a simple way to save and retrieve "native" php configuration files in the filesystem.
 
-For example, if writing a cms like [Vessel](https://github.com/hokeo/vessel), you might want to have the ability to save fast configuration values (like a site title or url) **perm**-anently from an admin interface. This is easy with perm.
+For example, if writing a cms like [Vessel](https://github.com/hokeo/vessel), you might want to save fast configuration values (like a site title or url) **perm**-anently from an admin interface. This is easy with perm.
 
 ## Requirements
 
-* PHP 5.3+
+* PHP 5.3+ or HHVM
 * Laravel 4
 * Composer
 
@@ -43,13 +43,15 @@ Now add the facade alias to the `aliases` array:
 
 And that's it.
 
-If you'd like to load/save files from a config base directory other than app/config, publish the package's configuration:
+### Configuration
+
+If you'd like to load/save files from a base directory other than app/config, publish the package's configuration:
 
 ```
 php artisan config:publish hokeo/vessel
 ```
 
-Then modify the base path in app/config/packages/andrewsuzuki/perm/config.php.
+Then modify the basepath in app/config/packages/andrewsuzuki/perm/config.php.
 
 ## Usage
 
@@ -95,7 +97,7 @@ $perm->setIf('timezone', 'UTC');
 
 * Set multiple values in one go. *chainable*
 ```PHP
-$perm->set(array('timezone' => 'UTC', 'location' => 'Earth'))
+$perm->set(array('timezone' => 'UTC', 'location' => 'Earth'));
 ```
 
 * Check if a key exists.
