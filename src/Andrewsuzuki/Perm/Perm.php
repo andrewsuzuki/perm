@@ -123,7 +123,7 @@ class Perm {
 	 * 
 	 * @return array
 	 */
-	public function getAll()
+	public function all()
 	{
 		return $this->configValues;
 	}

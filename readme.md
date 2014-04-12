@@ -75,7 +75,7 @@ list($location, $firstName) = $perm->get(array('location', 'name.first'));
 
 * Get all config values.
 ```PHP
-$config = $perm->getAll();
+$config = $perm->all();
 ```
 
 * Set a value. *chainable*

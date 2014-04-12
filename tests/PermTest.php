@@ -49,7 +49,7 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 	{
 		$perm = $this->loadPerm(true);
 		$this->assertInstanceOf('Andrewsuzuki\\Perm\\Perm', $perm);
-		$this->assertEquals($this->testConfigArray, $perm->getAll());
+		$this->assertEquals($this->testConfigArray, $perm->all());
 	}
 
 	/**
@@ -70,14 +70,14 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 	{
 		$perm = $this->loadPerm(false);
 		$this->assertInstanceOf('Andrewsuzuki\\Perm\\Perm', $perm);
-		$this->assertEquals(array(), $perm->getAll());
+		$this->assertEquals(array(), $perm->all());
 	}
 
-	public function testGetAll()
+	public function testall()
 	{
 		$perm = $this->loadPerm(true);
 
-		$this->assertEquals($this->testConfigArray, $perm->getAll());
+		$this->assertEquals($this->testConfigArray, $perm->all());
 	}
 
 	public function testGet()
@@ -225,7 +225,7 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf('Andrewsuzuki\\Perm\\Perm', $perm->forget('name'));
 		$this->assertInstanceOf('Andrewsuzuki\\Perm\\Perm', $perm->forget('gender'));
 
-		$this->assertEquals(array('url' => $this->testConfigArray['url']), $perm->getAll());
+		$this->assertEquals(array('url' => $this->testConfigArray['url']), $perm->all());
 	}
 
 	public function testReset()
@@ -234,7 +234,7 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertInstanceOf('Andrewsuzuki\\Perm\\Perm', $perm->reset());
 
-		$this->assertEquals(array(), $perm->getAll());
+		$this->assertEquals(array(), $perm->all());
 	}
 
 	public function testSave()
@@ -304,7 +304,7 @@ class PermTest extends \PHPUnit_Framework_TestCase {
 	{
 		$perm = $this->loadPerm(true);
 
-		$result = $perm->set('url', 'http://andrewsuzuki.com/actualUrl')->forget('name')->forget('gender')->getAll();
+		$result = $perm->set('url', 'http://andrewsuzuki.com/actualUrl')->forget('name')->forget('gender')->all();
 		$this->assertEquals(array('url' => 'http://andrewsuzuki.com/actualUrl'), $result);
 	}
 }
