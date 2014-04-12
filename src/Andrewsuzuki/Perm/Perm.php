@@ -214,7 +214,7 @@ class Perm {
 
 			// make directory (recursively) if it doesn't exist
 			$dir = dirname($this->filename);
-			if (!$this->filesystem->isDirectory($dir)) $this->filesystem->makeDirectory($dir, 511, true);
+			if (!$this->filesystem->isDirectory($dir)) $this->filesystem->makeDirectory($dir, 0777);
 
 			// save file
 			$this->filesystem->put($this->filename, $contents);
